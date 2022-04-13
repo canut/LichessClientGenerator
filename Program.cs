@@ -27,10 +27,11 @@ class LichessClientGenerator
     public static async Task GenerateClient(string swaggerPath, string outputPath)
     {
         var document = await OpenApiDocument.FromFileAsync(swaggerPath);
-  
+        string filename = Path.GetFileNameWithoutExtension(outputPath);
+        
         var settings = new CSharpClientGeneratorSettings
         {
-            ClassName = "LichessAPIClient", 
+            ClassName = filename, 
             CSharpGeneratorSettings = 
             {
                 Namespace = "Shatranj"
