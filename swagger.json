@@ -21,7 +21,7 @@
   "tags": [
     {
       "name": "Account",
-      "description": "Read and write account informations and preferences.\n<https://lichess.org/account/preferences/game-display>\n"
+      "description": "Read and write account information and preferences.\n<https://lichess.org/account/preferences/game-display>\n"
     },
     {
       "name": "Users",
@@ -49,7 +49,7 @@
     },
     {
       "name": "Board",
-      "description": "Play on Lichess with physical boards and third-party clients.\n  Works with normal Lichess accounts. Engine play or assistance is forbidden.\n\n\n### Features\n - [Stream incoming chess moves](#operation/boardGameStream)\n - [Play chess moves](#operation/boardGameMove)\n - [Read](#operation/boardGameStream) and [write](#operation/boardGameChatPost) in the player and spectator chats\n - [Receive](#operation/apiStreamEvent), [create](#operation/challengeCreate) and [accept](#operation/challengeAccept) (or [decline](#operation/challengeDecline)) challenges\n - [Abort](#operation/boardGameAbort) and [resign](#operation/boardGameResign) games\n - Compatible with normal Lichess accounts\n\n \n### Restrictions\n - Engine assistance, or any kind of outside help, is strictly forbidden\n - Time controls: [Rapid, Classical and Correspondence](https://lichess.org/faq#time-controls) only.\n   For direct challenges and games vs AI, Blitz is also possible.\n\n### Links\n - [Announcement](https://lichess.org/blog/XlRW5REAAB8AUJJ-/welcome-lichess-boards)\n - [Certabo support](https://github.com/haklein/certabo-lichess)\n - [Lichs (play from command-line)](https://github.com/Cqsi/lichs)\n - [Lichess discord bot](https://top.gg/bot/707287095911120968)"
+      "description": "Play on Lichess with physical boards and third-party clients.\n  Works with normal Lichess accounts. Engine play or assistance is forbidden.\n\n\n### Features\n - [Stream incoming chess moves](#operation/boardGameStream)\n - [Play chess moves](#operation/boardGameMove)\n - [Read](#operation/boardGameStream) and [write](#operation/boardGameChatPost) in the player and spectator chats\n - [Receive](#operation/apiStreamEvent), [create](#operation/challengeCreate) and [accept](#operation/challengeAccept) (or [decline](#operation/challengeDecline)) challenges\n - [Abort](#operation/boardGameAbort) and [resign](#operation/boardGameResign) games\n - Compatible with normal Lichess accounts\n\n \n### Restrictions\n - Engine assistance, or any kind of outside help, is strictly forbidden\n - Time controls: [Rapid, Classical and Correspondence](https://lichess.org/faq#time-controls) only.\n   For direct challenges and games vs AI, Blitz is also possible.\n\n### Links\n - [Announcement](https://lichess.org/blog/XlRW5REAAB8AUJJ-/welcome-lichess-boards)\n - [Implementation example](https://github.com/lichess-org/api-demo) and [live demo](https://lichess-org.github.io/api-demo/)\n\n  - [Certabo support](https://github.com/haklein/certabo-lichess)\n - [Lichs (play from command-line)](https://github.com/Cqsi/lichs)\n - [Lichess discord bot](https://top.gg/bot/707287095911120968)"
     },
     {
       "name": "Bot",
@@ -324,6 +324,15 @@
               "type": "string"
             },
             "required": true
+          },
+          {
+            "in": "query",
+            "name": "trophies",
+            "description": "Include user trophies",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
           }
         ],
         "responses": {
@@ -658,6 +667,43 @@
         }
       }
     },
+    "/api/racer": {
+      "post": {
+        "operationId": "racerPost",
+        "summary": "Create and join a puzzle race",
+        "description": "Create a new private [puzzle race](https://lichess.org/racer).\nThe Lichess user who creates the race must join the race page,\nand manually start the race when enough players have joined.\n\n- <https://lichess.org/racer>\n",
+        "tags": [
+          "Puzzles"
+        ],
+        "security": [
+          {
+            "OAuth2": [
+              "racer:write"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The new puzzle race.",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string",
+                  "default": "'*'"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PuzzleRaceJson"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/users": {
       "post": {
         "operationId": "apiUsers",
@@ -708,7 +754,7 @@
       "get": {
         "operationId": "accountMe",
         "summary": "Get my profile",
-        "description": "Public informations about the logged in user.\n",
+        "description": "Public information about the logged in user.\n",
         "tags": [
           "Account"
         ],
@@ -719,7 +765,7 @@
         ],
         "responses": {
           "200": {
-            "description": "The public informations about the logged in user.",
+            "description": "The public information about the logged in user.",
             "headers": {
               "Access-Control-Allow-Origin": {
                 "schema": {
@@ -1158,7 +1204,7 @@
       "get": {
         "operationId": "apiGamesUser",
         "summary": "Export games of a user",
-        "description": "Download all games of any user in PGN or [ndjson](#section/Introduction/Streaming-with-ND-JSON) format.\n\nGames are sorted by reverse chronological order (most recent first)\n\nWe recommend streaming the response, for it can be very long.\n<https://lichess.org/@/german11> for instance has more than 500,000 games.\n\nThe game stream is throttled, depending on who is making the request:\n  - Anonymous request: 20 games per second\n  - [OAuth2 authenticated](#section/Authentication) request: 30 games per second\n  - Authenticated, downloading your own games: 60 games per second\n",
+        "description": "Download all games of any user in PGN or [ndjson](#section/Introduction/Streaming-with-ND-JSON) format.\n\nGames are sorted by reverse chronological order (most recent first).\n\nWe recommend streaming the response, for it can be very long.\n<https://lichess.org/@/german11> for instance has more than 500,000 games.\n\nThe game stream is throttled, depending on who is making the request:\n  - Anonymous request: 20 games per second\n  - [OAuth2 authenticated](#section/Authentication) request: 30 games per second\n  - Authenticated, downloading your own games: 60 games per second\n",
         "tags": [
           "Games"
         ],
@@ -1324,6 +1370,15 @@
             "schema": {
               "type": "boolean",
               "default": true
+            }
+          },
+          {
+            "in": "query",
+            "name": "literate",
+            "description": "Insert textual annotations in the PGN about the opening, analysis variations, mistakes, and game termination.\n\nExample: `5... g4? { (-0.98 → 0.60) Mistake. Best move was h6. } (5... h6 6. d4 Ne7 7. g3 d5 8. exd5 fxg3 9. hxg3 c6 10. dxc6)`\n",
+            "schema": {
+              "type": "boolean",
+              "default": false
             }
           },
           {
@@ -2231,7 +2286,7 @@
                     "type": "string",
                     "description": "Make the tournament private, and restrict access with a password.\nYou can also [generate user-specific entry codes](https://github.com/lichess-org/api/tree/master/example/tournament-entry-code)\nbased on this password.\n"
                   },
-                  "teambBattleByTeam": {
+                  "teamBattleByTeam": {
                     "type": "string",
                     "description": "Set the ID of a team you lead to create a team battle.\nThe other teams can be added using the [team battle edit endpoint](#operation/apiTournamentTeamBattlePost).\n"
                   },
@@ -2801,7 +2856,7 @@
       "get": {
         "operationId": "gamesByTournament",
         "summary": "Export games of an Arena tournament",
-        "description": "Download games of a tournament in PGN or [ndjson](#section/Introduction/Streaming-with-ND-JSON) format.\n\nGames are sorted by reverse chronological order (most recent first)\n",
+        "description": "Download games of a tournament in PGN or [ndjson](#section/Introduction/Streaming-with-ND-JSON) format.\n\nGames are sorted by reverse chronological order (most recent first).\n\nThe game stream is throttled, depending on who is making the request:\n  - Anonymous request: 20 games per second\n  - [OAuth2 authenticated](#section/Authentication) request: 30 games per second\n",
         "tags": [
           "Arena tournaments"
         ],
@@ -3581,7 +3636,7 @@
       "get": {
         "operationId": "gamesBySwiss",
         "summary": "Export games of a Swiss tournament",
-        "description": "Download games of a swiss tournament in PGN or [ndjson](#section/Introduction/Streaming-with-ND-JSON) format.\n\nGames are sorted by reverse chronological order (last round first)\n",
+        "description": "Download games of a swiss tournament in PGN or [ndjson](#section/Introduction/Streaming-with-ND-JSON) format.\n\nGames are sorted by reverse chronological order (last round first).\n\nThe game stream is throttled, depending on who is making the request:\n  - Anonymous request: 20 games per second\n  - [OAuth2 authenticated](#section/Authentication) request: 30 games per second\n",
         "tags": [
           "Swiss tournaments"
         ],
@@ -4071,7 +4126,7 @@
                     "type": "string",
                     "description": "Short description of the broadcast tournament. Length must be between 3 and 400 characters.\n\nExample: `An 11 round classical tournament featuring the 9 highest rated players in the world. Including Carlsen, Caruana, Ding, Aronian, Nakamura and more.`\n"
                   },
-                  "markup": {
+                  "markdown": {
                     "type": "string",
                     "description": "Optional long description of the broadcast. Markdown is supported. Length must be less than 20,000 characters."
                   },
@@ -4213,7 +4268,7 @@
                     "type": "string",
                     "description": "Short description of the broadcast tournament. Length must be between 3 and 400 characters.\n\nExample: `An 11 round classical tournament featuring the 9 highest rated players in the world. Including Carlsen, Caruana, Ding, Aronian, Nakamura and more.`\n"
                   },
-                  "markup": {
+                  "markdown": {
                     "type": "string",
                     "description": "Optional long description of the broadcast tournament. Markdown is supported. Length must be less than 20,000 characters."
                   },
@@ -5468,14 +5523,22 @@
                   },
                   "example": [
                     {
-                      "id": "aliquantus",
-                      "name": "Aliquantus"
-                    },
-                    {
                       "id": "chess-network",
                       "name": "Chess-Network",
                       "title": "NM",
-                      "patron": true
+                      "patron": true,
+                      "stream": {
+                        "service": "twitch",
+                        "status": "Tuesday night 🐴 chess | lichess.org",
+                        "lang": "en"
+                      },
+                      "streamer": {
+                        "name": "ChessNetwork",
+                        "headline": "Chess with commentary, tournament competition, viewer interaction, and more.",
+                        "description": "I'm a self-taught National Master in chess from Pennsylvania, USA who was introduced to the game by my father in 1988 at age 8. I've been playing since, enjoy teaching, and have been a broadcaster of all things chess since 2011. It's my hope your experience with this stream is both fun and educational. 😎 -Jerry",
+                        "twitch": "https://twitch.tv/chessnetwork",
+                        "youTube": "https://www.youtube.com/channel/UCCDOQrpqLqKVcTCKzqarxLg/live"
+                      }
                     }
                   ]
                 }
@@ -5545,7 +5608,7 @@
     "/api/rel/following": {
       "get": {
         "operationId": "apiUserFollowing",
-        "summary": "Get users followed the logged in user",
+        "summary": "Get users followed by the logged in user",
         "description": "Users are streamed as [ndjson](#section/Introduction/Streaming-with-ND-JSON).\n",
         "tags": [
           "Relations"
@@ -8313,7 +8376,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Error"
+                  "$ref": "#/components/schemas/OAuthError"
                 }
               }
             }
@@ -8944,7 +9007,8 @@
           "horde",
           "kingOfTheHill",
           "racingKings",
-          "threeCheck"
+          "threeCheck",
+          "fromPosition"
         ],
         "example": "standard",
         "default": "standard"
@@ -10009,6 +10073,12 @@
           }
         }
       },
+      "PuzzleRaceJson": {
+        "example": {
+          "id": "Kj1t0",
+          "url": "https://lichess.org/racer/Kj1t0"
+        }
+      },
       "StormDashboardJson": {
         "example": {
           "high": {
@@ -10675,6 +10745,7 @@
         "example": {
           "id": "QITRjufu",
           "fullName": "U1700 SuperBlitz Arena",
+          "rated": true,
           "clock": {
             "increment": 0,
             "limit": 180
@@ -10839,6 +10910,8 @@
       },
       "Simul": {
         "example": {
+          "id": "pDGbxhUe",
+          "name": "GM ChessWeeb",
           "fullName": "GM ChessWeeb simul",
           "host": {
             "id": "chessweeb",
@@ -10846,11 +10919,12 @@
             "rating": 1500,
             "title": "GM"
           },
-          "id": "pDGbxhUe",
           "isCreated": false,
           "isFinished": true,
           "isRunning": false,
-          "name": "GM ChessWeeb",
+          "estimatedStartAt": 1620029815106,
+          "startedAt": 1620029815106,
+          "finishedAt": 1620029937283,
           "nbApplicants": 0,
           "nbPairings": 24,
           "text": "",
@@ -11631,6 +11705,22 @@
         },
         "example": {
           "error": "This request is invalid because [...]"
+        }
+      },
+      "OAuthError": {
+        "properties": {
+          "error": {
+            "type": "string",
+            "description": "The cause of the error."
+          },
+          "error_description": {
+            "type": "string",
+            "description": "The reason why the request was rejected."
+          }
+        },
+        "example": {
+          "error": "invalid_grant",
+          "error_description": "hash of code_verifier does not match code_challenge"
         }
       },
       "NotFound": {
