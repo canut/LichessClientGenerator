@@ -58,6 +58,6 @@ class LichessClientGenerator
         var outputPath = Path.Combine(Directory.GetCurrentDirectory(), args[1]);
 
         await GenerateClient(swaggerPath, outputPath);
-        Console.WriteLine("C# Client Generation done!");
+        Console.WriteLine("C# Client Generation done in {0}!", outputPath);
     }
 }
